@@ -1,0 +1,58 @@
+# Network port scanner
+#writtin in python3 by echo2xlima
+
+
+import socket
+import logging
+import time
+
+
+class SConnect:
+
+    def __init__(self, ip, port=None):
+        self.ip = ip
+        self.port = port
+        self.address = (self.ip, self.port)
+        self.s_connection = socket.socket(socket.AF_INET,       socket.SOCK_STREAM)
+        self.s_connection.settimeout(0.3)
+
+    def portscan(self):
+
+        return self.s_connection.connect_ex(self.address)
+
+#max port number is 65535, check line 37 to change.
+def main():
+
+    logging.basicConfig(filename="errlog.log", format="%(asctime)s : %(message)s")
+    logging.info("Start")
+    print("Echo2xLima portscanning tool!")
+    print("insert your target.")
+    print("The range of ports scanned is 1-65535.")
+    u_ip = input("\nTarget IP: ")
+
+    open_pcounter = 0
+    closed_pcounter = 0
+#problem in counter string
+    if u_ip is not None:
+        for p in range(1, 65535):
+            start_ptime = time.time()
+            c = SConnect(u_ip, p)
+            if c.portscan() == 0:
+                print("Port {} is open".format(p))
+                open_pcounter += 1
+            else:
+                print("Port {} is closed".format(p))
+                closed_pcounter += 1
+            
+    else:
+        print("You failed, terminating.\n")
+
+    print("Total open ports:{}".format(open_pcounter))
+    print("Total closed ports:{}".format(closed_pcounter))
+    logging.info("Finished")
+
+
+if __name__ == '__main__':
+    start_time = time.time()
+    main()
+    print("--- %s seconds ---" % (time.time() - start_time))
